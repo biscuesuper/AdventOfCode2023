@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security;
 
 class Program
 {
@@ -10,21 +12,20 @@ class Program
         var sum = 0;
         for(int i = 1; i<= lines.Count(); i++)
         {
-            if(IsItPossible(i))
-            {
-                sum += i;
-                Console.WriteLine("ok " + lines[i - 1]);
-            }
-            else
-            {
-                Console.WriteLine("NOPE " + lines[i - 1]);
-            }
+            Console.WriteLine(lines[i-1]);
+            sum += PowerOf(i);
         }
         Console.WriteLine(sum);
     }
 
-    static bool IsItPossible(int i)
+    static int PowerOf(int i)
     {
+        var colours = new Dictionary<string, int>()
+        {
+            { "red", 0},
+            { "green", 0},
+            { "blue", 0}
+        };
         var j = lines[i - 1].IndexOf(':');
         var game = lines[i - 1].Substring(j + 1, lines[i - 1].Length - j - 1);
         //Console.WriteLine(game);
@@ -40,32 +41,34 @@ class Program
                 if (group.Contains("red"))
                 {
                     var x = group.IndexOf('r');
-                    var num = group.Substring(0, x);
-                    var intt = int.Parse(num);
-                    if (intt > 12) return false;
+                    var numStr = group.Substring(0, x);
+                    var num = int.Parse(numStr);
+                    colours["red"] = Math.Max(colours["red"], num);
                 }
 
                 if (group.Contains("green"))
                 {
                     var x = group.IndexOf('g');
-                    var num = group.Substring(0, x);
-                    var intt = int.Parse(num);
-                    if (intt > 13) return false;
+                    var numStr = group.Substring(0, x);
+                    var num = int.Parse(numStr);
+                    colours["green"] = Math.Max(colours["green"], num);
                 }
 
                 if (group.Contains("blue"))
                 {
                     var x = group.IndexOf('b');
-                    var num = group.Substring(0, x);
-                    var intt = int.Parse(num);
-                    if (intt > 14) return false;
+                    var numStr = group.Substring(0, x);
+                    var num = int.Parse(numStr);
+                    colours["blue"] = Math.Max(colours["blue"], num);
                 }
             }
         }
-        return true;
+        Console.WriteLine($"Red: {colours["red"]}, Green: {colours["green"]}, Blue: {colours["blue"]}");
+        return colours["red"] * colours["green"] * colours["blue"];
     }
 
     static List<string> lines = new List<string>();
+
 
     public static void Read()
     {
